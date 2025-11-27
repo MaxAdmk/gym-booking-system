@@ -62,6 +62,12 @@ class ContentRepository {
         return await GymHall.create(hallData);
     }
 
+    async deleteGymHall(id) {
+        return await GymHall.destroy(
+            { where: {id} }
+        );
+    }
+
 }
 
 module.exports = new ContentRepository();

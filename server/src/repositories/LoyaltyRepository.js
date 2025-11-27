@@ -1,6 +1,6 @@
 const { LoyaltyCard } = require('../models');
 
-class LoyaltyCardRepository{
+class LoyaltyRepository{
 
     async findByUserId(userId) {
         return await LoyaltyCard.findOne({
@@ -30,4 +30,4 @@ class LoyaltyCardRepository{
 
 }
 
-module.exports = new LoyaltyCardRepository();
+module.exports = new LoyaltyRepository();

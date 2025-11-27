@@ -16,6 +16,10 @@ class UserRepository {
         });
     }
 
+    async findAll() {
+        return await User.findAll();
+    }
+
     async delete(id){
         return await User.destroy({
             where: {id}
