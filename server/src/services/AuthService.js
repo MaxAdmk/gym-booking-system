@@ -15,7 +15,7 @@ class AuthService {
 
         // Hashing the password
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(userData.hashedPassword, salt);
+        const hashedPassword = await bcrypt.hash(userData.password, salt);
 
         return await UserRepository.save({
             ...userData,
@@ -36,7 +36,7 @@ class AuthService {
 
         // Genering the token
         const token = jwt.sign(
-            { id: userId, role: user.role },
+            { id: user.id, role: user.role },
             SECRET_KEY,
             { expiresIn: '24h' }
         );
