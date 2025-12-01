@@ -16,20 +16,23 @@ class BookingRepository {
         });
     }
 
-    async findActiveByHallAndDate(hallid, startTime, endTime) {
-
-        const { Op, where } = require('sequelize');
-
+    async findActiveByHallAndDate(hallId, startTime, endTime) {
+        const { Op } = require("sequelize");
+        
         return await Booking.findAll({
             where: {
-                hallId: hallid,
+                hallId: hallId,
                 status: 'CONFIRMED',
-                [Op.or]: [
+                [Op.and]: [
                     {
-                        startTime: { [Op.between]: [startTime, endTime] }
+                        startTime: {
+                            [Op.lt]: endTime
+                        }
                     },
                     {
-                        endTime: { [Op.between]: [startTime, endTime] }
+                        endTime: {
+                            [Op.gt]: startTime
+                        }
                     }
                 ]
             }

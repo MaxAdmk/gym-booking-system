@@ -38,6 +38,26 @@ class BookingController {
         }
     }
 
+    async getBusySlots(req, res) {
+        try {
+            const { hallId, date } = req.query;
+            
+            const startOfDay = new Date(`${date}T00:00:00`);
+            const endOfDay = new Date(`${date}T23:59:59`);
+
+            const bookings = await BookingRepository.findActiveByHallAndDate(hallId, startOfDay, endOfDay);
+
+            const busyTimes = bookings.map(b => {
+                const dateObj = new Date(b.startTime);
+                return dateObj.toTimeString().slice(0, 5); 
+            });
+
+            res.json(busyTimes);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
 }
 
 module.exports = new BookingController();

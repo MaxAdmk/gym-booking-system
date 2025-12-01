@@ -1,4 +1,5 @@
 const UserRepository = require('../repositories/UserRepository');
+const LoyaltyRepository = require('../repositories/LoyaltyRepository');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -17,10 +18,14 @@ class AuthService {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(userData.password, salt);
 
-        return await UserRepository.save({
+        const newUser = await UserRepository.save({
             ...userData,
             passwordHash: hashedPassword
         });
+
+        await LoyaltyRepository.createLoyaltyCard(newUser.id);
+
+        return newUser;
     }
 
     async login(email, password) {
