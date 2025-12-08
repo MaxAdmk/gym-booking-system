@@ -17,7 +17,7 @@ const Membership = sequelize.define('Membership', {
         allowNull: false
     },
     type: {
-        type: DataTypes.ENUM('MONTHLY', 'SINGLE'),
+        type: DataTypes.ENUM('MONTHLY', 'SINGLE', 'CORPORATE'),
         allowNull: false
     },
     status: {

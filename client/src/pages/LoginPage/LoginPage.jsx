@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import './LoginPage.css';
 
 const LoginPage = () => {
     const { login } = useAuth();
@@ -17,22 +18,23 @@ const LoginPage = () => {
     };
 
     return (
-        <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto'}}>
+        <div className="login-container">
             <h2>Login</h2>
-            <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '10px'}}>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="login-form">
 
                 <input
                     {...register("email", { required: true })}
                     placeholder="Email"
                 />
-                {errors.email && <span style={{color: 'red'}}>Email is required</span>}
+                {errors.email && <span className="error">Email is required</span>}
 
                 <input
                     {...register("password", { required: true })}
                     placeholder="Password"
                     type="password"
                 />
-                {errors.password && <span style={{color: 'red'}}>Password is required</span>}
+                {errors.password && <span className="error">Password is required</span>}
 
                 <button type="submit">Login</button>
             </form>

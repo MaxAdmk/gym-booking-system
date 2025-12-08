@@ -5,12 +5,13 @@ import { useAuth } from './context/AuthContext';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import HomePage from './pages/HomePage/HomePage';
 import AdminPage from './pages/AdminPage/AdminPage';
+import NotificationBell from './components/NotificationBell';
 import './App.css';
 
 const Navbar = () => {
     const { user } = useAuth();
     return (
-        <nav style={{ padding: '10px', background: '#eee', marginBottom: '20px' }}>
+        <nav style={{ padding: '10px', background: '#000000ff', marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
             <Link to="/" style={{ marginRight: '10px' }}>Home</Link>
             
             {!user ? (
@@ -20,6 +21,7 @@ const Navbar = () => {
                 </>
             ) : (
                 <>
+                    <NotificationBell userId={user.id}/>
                     <Link to="/profile" style={{ marginRight: '10px' }}>Profile</Link>
                     {user.role === 'ADMIN' && <Link to="/admin">Admin</Link>}
                 </>

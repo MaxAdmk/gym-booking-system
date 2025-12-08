@@ -9,11 +9,46 @@
     align-items: center;
 }
 
+.profile_header h1{
+    color: black;
+}
+
+.section_header h3{
+    color: black;
+    font-size: 30px;
+    margin: 10px 0;
+}
+
+.edit_button{
+    margin: 10px 0;
+}
+
+.form_group label{
+    color: black;
+}
+
 .logout_button{
     background: #ff4d4d; 
     color: white;
     border: none; 
     padding: 10px; 
+}
+
+.info_display p{
+    color: black;
+}
+
+.notifications_section h3{
+    color: black;
+}
+
+.notifications_list li{
+    color: black;
+    list-style-type: none;
+}
+
+.no_data{
+    color: black;
 }
 
 .features_information{
@@ -37,6 +72,19 @@
     justify-content: space-around;
 }
 
+.membership_buttons{
+    display: flex;
+    justify-content: space-around;
+}
+
 .table_topline{
     background: black;
+}
+
+.history_section h3{
+    color: black;
+}
+
+.table td{
+    color: black;
 }

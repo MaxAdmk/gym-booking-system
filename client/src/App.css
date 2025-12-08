@@ -39,3 +39,12 @@
 .read-the-docs {
   color: #888;
 }
+nav a{
+  color: white;
+}
+
+nav a:hover{
+  color: red;
+  transition: 0.3s;
+  cursor: pointer;
+}

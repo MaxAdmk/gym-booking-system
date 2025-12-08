@@ -1,4 +1,5 @@
 const AdminService = require('../services/AdminService');
+const NotificationService = require('../services/NotificationService');
 
 class AdminController {
 
@@ -35,6 +36,16 @@ class AdminController {
             res.status(201).json(gymHall);
         } catch (error) {
             res.status(500).json({ error: error.message });
+        }
+    }
+
+    async triggerReminders(req, res) {
+        try {
+            const result = await NotificationService.sendReminders();
+            res.json({ message: `Reminders sent for ${result.count} bookings.` });
+        } catch (error) { 
+            console.error(error);
+            res.status(500).json({ error: error.message }); 
         }
     }
 

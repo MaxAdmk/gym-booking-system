@@ -1,6 +1,7 @@
 const LoyaltyRepository = require('../../repositories/LoyaltyRepository');
 const StandartStrategy = require('./StandardStrategy');
 const PremiumStrategy = require('./PremiumStrategy');
+const NotificationService = require('../NotificationService');
 
 class LoyaltyService {
 
@@ -23,13 +24,19 @@ class LoyaltyService {
 
     async processBookingBonus(userId, amount) {
         const card = await this.repo.findByUserId(userId);
-        if (!card) return;
+        if (!card) {
+            console.log('Loyalty card not found');
+            return;
+        }
 
         const pointsToAdd = await this.calculatePoints(amount, card.level);
 
         const newBalance = card.pointBalance + pointsToAdd;
 
         await this.repo.updatePoints(card.id, newBalance);
+
+        // Observer pattern
+        await NotificationService.notifyUser(userId, `You received ${pointsToAdd} bonus points! New balance: ${newBalance}`);
     }
 
     async upgradeLevel(userId) {

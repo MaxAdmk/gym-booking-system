@@ -23,6 +23,11 @@ const SportService = sequelize.define('SportService', {
     difficultyLevel: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    ageCategory: { 
+        type: DataTypes.STRING, 
+        allowNull: false, 
+        defaultValue: 'Adults' 
     }
 }, {
     timestamps: false

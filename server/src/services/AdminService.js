@@ -1,5 +1,6 @@
 const ContentRepository = require('../repositories/ContentRepository');
 const UserRepository = require('../repositories/UserRepository');
+const NotificationService = require('./NotificationService');
 
 class AdminService {
 
@@ -14,7 +15,11 @@ class AdminService {
 
     // Content management (Services)
     async createService(data) {
-        return await ContentRepository.saveService(data);
+        const newService = await ContentRepository.saveService(data);
+
+        await NotificationService.sendPromoToAll(`New section "${newService.name}" is now available! Check it out!`);
+
+        return newService;
     }
 
     async updateService(id, data) {

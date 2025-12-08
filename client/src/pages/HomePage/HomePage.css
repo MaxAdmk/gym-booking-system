@@ -19,8 +19,248 @@
 .book_button{
     width: 100%; 
     padding: 10px; 
-    background: #007bff; 
+    background: #ff000071; 
     color: white; 
     border: none; 
     cursor: pointer;
+}
+
+/* MAIN CONTAINER */
+.home_page_container {
+    padding: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* ----------------------------- */
+/* SECTION 1 — HALLS */
+/* ----------------------------- */
+.halls_section h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #000000;
+}
+
+.halls_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.hall_card {
+    background: #000000;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.hall_image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.hall_info {
+    padding: 15px;
+}
+
+/* DIVIDER */
+.divider {
+    margin: 30px auto;
+    border: none;
+    border-top: 2px solid #000000a4;
+    width: 80%;
+}
+
+/* ----------------------------- */
+/* SECTION 2 — FILTERS */
+/* ----------------------------- */
+
+.filters_section h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 30px;
+    color: #000;
+}
+
+.filters_container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.filter_group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter_group select {
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #000000;
+}
+
+.filter_group label{
+    color: #000;
+    font-size: 20px;
+}
+
+/* ----------------------------- */
+/* SECTION 3 — SERVICES */
+/* ----------------------------- */
+
+#sport_section_h1{
+    color: #000;
+}
+
+.service_section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.service {
+    background: #000000;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.service_tags {
+    display: flex;
+    gap: 5px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    justify-content: space-around;
+}
+
+.tag {
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    color: black;
+    background: #e1e1e1;
+}
+
+.service_desc {
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.book_button {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: rgb(255, 255, 255);
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.book_button:hover {
+    background: #0066d6;
+}
+
+.no_services_text {
+    text-align: center;
+    color: #666;
+    grid-column: 1/-1;
+}
+
+/* ----------------------------- */
+/* MODAL */
+/* ----------------------------- */
+
+.modal_backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal_box {
+    background: #fff;
+    padding: 30px;
+    width: 500px;
+    border-radius: 10px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal_box h2{
+    color: black;
+    margin: 0 auto;
+}
+
+.modal_inputs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.modal_inputs label{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal_inputs input{
+    padding: 10px 15px;
+    margin: 0 auto;
+    border-radius: 15px;
+}
+
+.modal_inputs select{
+    padding: 10px 15px;
+    margin: 0 auto;
+    border-radius: 15px;
+}
+
+.modal_times {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.time_button {
+    padding: 10px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.time_button.free {
+    background: #28a745;
+}
+
+.time_button.free:hover {
+    background: #218838;
+}
+
+.time_button.busy {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.cancel_button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px;
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.cancel_button:hover {
+    background: #c82333;
 }

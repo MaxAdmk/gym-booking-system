@@ -20,6 +20,11 @@ const AdminPage = () => {
                 {activeTab === 'hall' && <HallForm />}
                 {activeTab === 'trainer' && <TrainerForm />}
             </div>
+            // Додайте це в AdminPage.jsx (наприклад, біля кнопок вкладок)
+            <button onClick={async () => {
+                await api.post('/admin/reminders');
+                alert('Reminders sent!');
+            }} style={{background: 'orange'}}>⚡ Send Reminders</button>
         </div>
     );
 };

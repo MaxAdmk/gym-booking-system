@@ -8,6 +8,8 @@ class MembershipFactory {
             endDate.setDate(startDate.getDate() + 30);
         } else if (type === 'SINGLE') {
             endDate.setDate(startDate.getDate() + 1);
+        } else if (type === 'CORPORATE') {
+            endDate.setDate(startDate.getDate() + 365);
         } else {
             throw new Error('Unknown membership type');
         }

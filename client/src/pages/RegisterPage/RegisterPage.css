@@ -1,0 +1,29 @@
+.register-container {
+    padding: 20px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.register-container h2{
+    color: black;
+    font-size: 34px;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.register-form input{
+    padding: 15px 20px;
+    border-radius: 15px;
+}
+
+.error {
+    color: red;
+}
+
+.submit{
+    
+}

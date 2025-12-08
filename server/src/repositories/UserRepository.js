@@ -25,6 +25,11 @@ class UserRepository {
             where: {id}
         });
     }
+
+    async update(id, data) {
+        return await User.update(data, { where: { id } });
+    }
+
 }
 
 module.exports = new UserRepository();

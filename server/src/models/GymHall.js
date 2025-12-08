@@ -19,6 +19,9 @@ const GymHall = sequelize.define('GymHall',{
     location: {
         type: DataTypes.STRING,
         allowNull: true
+    }, photoUrl: { 
+        type: DataTypes.STRING, 
+        allowNull: true 
     }
 }, {
     timestamps: false
