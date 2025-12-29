@@ -1,6 +1,7 @@
 const ContentRepository = require('../repositories/ContentRepository');
 const UserRepository = require('../repositories/UserRepository');
 const NotificationService = require('./NotificationService');
+const BookingRepository = require('../repositories/BookingRepository');
 
 class AdminService {
 
@@ -50,6 +51,10 @@ class AdminService {
 
     async deleteGym(id) {
         return await ContentRepository.deleteGymHall(id);
+    }
+
+    async getAllBookings() {
+        return await BookingRepository.findAll();
     }
 
 }

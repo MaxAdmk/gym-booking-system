@@ -5,10 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 
 const HomePage = () => {
-    // STATE
+    // --- STATE ---
     const [services, setServices] = useState([]);
     const [halls, setHalls] = useState([]);
-    const [trainers, setTrainers] = useState([]);
+    
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    const [trainers, setTrainers] = useState([]); 
     const [filteredServices, setFilteredServices] = useState([]);
 
     const [filterCategory, setFilterCategory] = useState('All');
@@ -28,7 +31,7 @@ const HomePage = () => {
         "18:00", "19:00", "20:00"
     ];
 
-    // LOAD DATA
+    // --- LOAD DATA ---
     useEffect(() => {
         const loadData = async () => {
             try {
@@ -46,7 +49,7 @@ const HomePage = () => {
         loadData();
     }, []);
 
-    // FILTERS
+    // --- FILTERS LOGIC ---
     useEffect(() => {
         let result = services;
 
@@ -62,17 +65,46 @@ const HomePage = () => {
         setFilteredServices(result);
     }, [filterCategory, filterLevel, filterAge, services]);
 
-
     const categories = ['All', ...new Set(services.map(s => s.category))];
     const levels = ['All', ...new Set(services.map(s => s.difficultyLevel))];
     const ages = ['All', ...new Set(services.map(s => s.ageCategory || 'Adults'))];
 
-    // BUSY SLOTS
+    const availableHalls = selectedService 
+        ? halls.filter(hall => hall.SportServices?.some(s => s.id === selectedService.id))
+        : [];
+
+    const availableTrainers = bookingData.hallId 
+        ? halls.find(h => h.id == bookingData.hallId)?.Trainers || []
+        : [];
+
+    useEffect(() => {
+        if (selectedService && availableHalls.length > 0) {
+            setBookingData(prev => ({
+                ...prev,
+                hallId: availableHalls[0].id,
+                trainerId: '', 
+                date: ''       
+            }));
+        }
+    }, [selectedService, halls]);
+
+    useEffect(() => {
+        if (availableTrainers.length > 0) {
+            setBookingData(prev => ({ ...prev, trainerId: availableTrainers[0].id }));
+        } else {
+            setBookingData(prev => ({ ...prev, trainerId: '' }));
+        }
+    }, [bookingData.hallId, halls]);
+
+
+    // BUSY SLOTS LOGIC
     useEffect(() => {
         if (bookingData.date && bookingData.hallId) {
             const fetchBusySlots = async () => {
                 try {
-                    const res = await api.get(`/bookings/schedule?hallId=${bookingData.hallId}&date=${bookingData.date}`);
+        
+                    const timestamp = new Date().getTime(); 
+                    const res = await api.get(`/bookings/schedule?hallId=${bookingData.hallId}&date=${bookingData.date}&_t=${timestamp}`);
                     setBusySlots(res.data);
                 } catch (e) { console.error(e); }
             };
@@ -80,18 +112,18 @@ const HomePage = () => {
         } else {
             setBusySlots([]);
         }
-    }, [bookingData.date, bookingData.hallId]);
-
+    }, [bookingData.date, bookingData.hallId, selectedService]); 
 
     const handleBookClick = (service) => {
         if (!user) return navigate('/login');
-
         setSelectedService(service);
-        setBookingData({
-            hallId: halls[0]?.id || '',
-            trainerId: trainers[0]?.id || '',
-            date: ''
-        });
+
+    };
+
+    const closeModal = () => {
+        setSelectedService(null);
+        setBookingData({ hallId: '', trainerId: '', date: '' });
+        setBusySlots([]); 
     };
 
     const submitBooking = async (time) => {
@@ -105,12 +137,14 @@ const HomePage = () => {
                 userId: user.id,
                 serviceId: selectedService.id,
                 hallId: bookingData.hallId,
-                trainerId: bookingData.trainerId,
+                
+                trainerId: bookingData.trainerId ? bookingData.trainerId : null,
+                
                 startTime: startTime.toISOString(),
                 endTime: endTime.toISOString()
             });
             alert("Booking Successful!");
-            setSelectedService(null);
+            closeModal();
         } catch (error) {
             alert("Failed: " + (error.response?.data?.error || error.message));
         }
@@ -205,7 +239,11 @@ const HomePage = () => {
 
                         <div className="modal_inputs">
                             <label>Date:
-                                <input type="date" onChange={e => setBookingData({ ...bookingData, date: e.target.value })} />
+                                <input 
+                                    type="date" 
+                                    min={todayStr} 
+                                    onChange={e => setBookingData({ ...bookingData, date: e.target.value })} 
+                                />
                             </label>
 
                             <label>Hall:
@@ -213,9 +251,13 @@ const HomePage = () => {
                                     value={bookingData.hallId}
                                     onChange={e => setBookingData({ ...bookingData, hallId: e.target.value })}
                                 >
-                                    {halls.map(h => (
-                                        <option key={h.id} value={h.id}>{h.name}</option>
-                                    ))}
+                                    {availableHalls.length > 0 ? (
+                                        availableHalls.map(h => (
+                                            <option key={h.id} value={h.id}>{h.name}</option>
+                                        ))
+                                    ) : (
+                                        <option disabled>No halls available for this service</option>
+                                    )}
                                 </select>
                             </label>
 
@@ -223,38 +265,57 @@ const HomePage = () => {
                                 <select
                                     value={bookingData.trainerId}
                                     onChange={e => setBookingData({ ...bookingData, trainerId: e.target.value })}
+                                    disabled={!bookingData.hallId}
                                 >
-                                    {trainers.map(t => (
-                                        <option key={t.id} value={t.id}>
-                                            {t.firstName} {t.lastName}
-                                        </option>
-                                    ))}
+                                    {availableTrainers.length > 0 ? (
+                                        availableTrainers.map(t => (
+                                            <option key={t.id} value={t.id}>
+                                                {t.firstName} {t.lastName}
+                                            </option>
+                                        ))
+                                    ) : (
+                                        <option>No trainers in this hall</option>
+                                    )}
                                 </select>
                             </label>
                         </div>
 
-                        {bookingData.date && (
+                        {bookingData.date && bookingData.hallId && ( 
                             <div>
                                 <h4>Select Time:</h4>
                                 <div className="modal_times">
                                     {timeSlots.map(time => {
                                         const isBusy = busySlots.includes(time);
+                                        const slotDateTime = new Date(`${bookingData.date}T${time}`);
+                                        const now = new Date();
+                                        const isPast = slotDateTime < now;
+
+                
+                                        const isMissingData = !bookingData.trainerId; 
+                                        const isDisabled = isBusy || isPast || isMissingData;
+
                                         return (
                                             <button
                                                 key={time}
-                                                disabled={isBusy}
-                                                onClick={() => !isBusy && submitBooking(time)}
-                                                className={`time_button ${isBusy ? 'busy' : 'free'}`}
+                                                disabled={isDisabled}
+                                                onClick={() => !isDisabled && submitBooking(time)}
+                                                className={`time_button ${isBusy ? 'busy' : isPast ? 'past' : isMissingData ? 'disabled' : 'free'}`}
+                                                title={isMissingData ? "Please select a trainer first" : ""}
                                             >
-                                                {time}
+                                            {time}
                                             </button>
                                         );
                                     })}
                                 </div>
+                                
+                                {!bookingData.trainerId && (
+                                    <p style={{color: 'orange', fontSize: '12px', marginTop: '5px'}}>
+                                        ⚠️ Please select a trainer to see available times.
+                                    </p>
+                                )}
                             </div>
                         )}
-
-                        <button className="cancel_button" onClick={() => setSelectedService(null)}>
+                        <button className="cancel_button" onClick={closeModal}>
                             Cancel
                         </button>
                     </div>

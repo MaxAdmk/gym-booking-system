@@ -1,0 +1,154 @@
+.admin-container {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    color: black;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.admin-content-box {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.reminder-box {
+    margin-top: 20px;
+}
+
+/* ---------------- Buttons ---------------- */
+
+.btn-purple {
+    background: #6f42c1;
+    color: white;
+}
+
+.btn-orange {
+    background: orange;
+    color: white;
+}
+
+.btn-green {
+    background: green;
+    color: white;
+}
+
+.btn-red {
+    background: red;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-orange-small {
+    background: orange;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.btn-refresh {
+    margin-bottom: 10px;
+}
+
+/* ---------------- Form ---------------- */
+
+.form-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+/* ---------------- Table ---------------- */
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    background: #eee;
+    text-align: left;
+    padding: 8px;
+}
+
+.table td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.status-green {
+    color: green;
+}
+
+.status-red {
+    color: red;
+}
+
+/* Checkbox groups */
+.checkbox-group {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+
+.checkbox-group strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #333;
+}
+
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.checkbox-grid label {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+/* Badges for Users */
+.badge-admin {
+    background-color: #6f42c1;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.badge-client {
+    background-color: #eee;
+    color: #333;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.btn-refresh {
+    margin-bottom: 10px;
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}

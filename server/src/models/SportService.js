@@ -28,6 +28,11 @@ const SportService = sequelize.define('SportService', {
         type: DataTypes.STRING, 
         allowNull: false, 
         defaultValue: 'Adults' 
+    },
+    price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 100.00
     }
 }, {
     timestamps: false

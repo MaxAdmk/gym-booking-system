@@ -264,3 +264,29 @@
 .cancel_button:hover {
     background: #c82333;
 }
+
+.time_button.busy {
+    background-color: #dc3545;
+    color: white;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.time_button.past {
+    background-color: #e0e0e0;
+    color: #999;
+    cursor: not-allowed;
+    border: 1px solid #ccc;
+}
+
+.time_button.free {
+    background-color: #28a745;
+    color: white;
+}
+
+.time_button.disabled {
+    background-color: #ddd;
+    color: #aaa;
+    cursor: not-allowed;
+    border: 1px dashed #ccc;
+}

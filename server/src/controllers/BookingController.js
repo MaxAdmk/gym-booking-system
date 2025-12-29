@@ -5,15 +5,19 @@ class BookingController {
 
     async create(req, res) {
         try {
-            const { userId, hallId, serviceId, trainerId, startTime, endTime } = req.body;
+            let { userId, hallId, serviceId, trainerId, startTime, endTime } = req.body;
             
-            const  booking = await BookingFacade.createBooking(
+            if (!trainerId || trainerId === '') {
+                trainerId = null;
+            }
+
+            const booking = await BookingFacade.createBooking(
                 userId, hallId, serviceId, trainerId, new Date(startTime), new Date(endTime)
             );
-
+            
             res.status(201).json(booking);
         } catch (error) {
-            console.error(error);
+            console.error(error); 
             res.status(400).json({ error: error.message });
         }
     }

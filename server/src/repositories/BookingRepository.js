@@ -1,4 +1,4 @@
-const { Booking, Op } = require('../models');
+const {  Trainer, GymHall, Booking, Op } = require('../models');
 
 class BookingRepository {
 
@@ -10,9 +10,17 @@ class BookingRepository {
         return await Booking.findByPk(id);
     }
 
+    async findAll() {
+        return await Booking.findAll({
+            order: [['createdAt', 'DESC']] 
+        });
+    }
+
     async findByUser(userId) {
         return await Booking.findAll({
-            where: {userId}
+            where: { userId },
+            include: [GymHall, Trainer], 
+            order: [['createdAt', 'DESC']]
         });
     }
 
@@ -34,6 +42,20 @@ class BookingRepository {
                             [Op.gt]: startTime
                         }
                     }
+                ]
+            }
+        });
+    }
+
+    async findActiveByTrainerAndDate(trainerId, startTime, endTime) {
+        const { Op } = require("sequelize");
+        return await Booking.findAll({
+            where: {
+                trainerId: trainerId,
+                status: 'CONFIRMED',
+                [Op.and]: [
+                    { startTime: { [Op.lt]: endTime } },
+                    { endTime: { [Op.gt]: startTime } }
                 ]
             }
         });

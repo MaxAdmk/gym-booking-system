@@ -5,20 +5,12 @@ const LoyaltyService = require('../loyalty/LoyaltyService');
 const BookingRepository = require('../../repositories/BookingRepository');
 
 class BookingFacade {
-    /*
-        Main method does this:
-        1. Checks the available time
-        2. Calculates the price
-        3. Makes payment
-        4. Saves booking
-        5. Calculates bonuses
-        6. Sends message
-    */
+
     async createBooking(userId, hallId, serviceId, trainerId, startTime, endTime) {
         // Checking availability
-        const isAvailable = await BookingService.checkAvailability(hallId, startTime, endTime);
-        if (!isAvailable) {
-            throw new Error('GymHall is busy at this time');
+        const check = await BookingService.checkAvailability(hallId, trainerId, startTime, endTime);
+        if (!check.available) {
+            throw new Error(check.reason);
         }
 
         // Calculating the price
@@ -54,7 +46,18 @@ class BookingFacade {
     }
 
     async cancelBooking(bookingId) {
+        const booking = await BookingRepository.findById(bookingId);
+        
+        if (!booking) {
+            throw new Error('Booking not found');
+        }
+
         await BookingRepository.cancel(bookingId);
+
+        const dateStr = new Date(booking.startTime).toLocaleString();
+        const message = `Your booking #${bookingId} for ${dateStr} has been CANCELLED.`;
+        await NotificationService.notifyUser(booking.userId, message);
+        
         return true;
     }
 

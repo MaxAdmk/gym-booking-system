@@ -47,19 +47,39 @@ class ContentRepository {
     }
 
     async getAllGymHalls() {
-        return await GymHall.findAll();
+        return await GymHall.findAll({
+            include: [
+                {
+                    model: SportService,
+                    attributes: ['id', 'name'],
+                    through: { attributes: [] }
+                },
+                {
+                    model: Trainer,
+                    attributes: ['id', 'firstName', 'lastName'],
+                    through: { attributes: [] }
+                }
+            ]
+        });
     }
 
-    async saveGymHall(hallData) {
-        if(hallData.id) {
-            return await GymHall.update(
-                hallData, 
-                { where: 
-                    {id : hallData.id}
-                }
-            );
+    async saveGymHall(data) {
+        const hall = await GymHall.create({
+            name: data.name,
+            capacity: data.capacity,
+            location: data.location,
+            photoUrl: data.photoUrl
+        });
+
+        if (data.serviceIds && data.serviceIds.length > 0) {
+            await hall.setSportServices(data.serviceIds);
         }
-        return await GymHall.create(hallData);
+
+        if (data.trainerIds && data.trainerIds.length > 0) {
+            await hall.setTrainers(data.trainerIds);
+        }
+
+        return hall;
     }
 
     async deleteGymHall(id) {

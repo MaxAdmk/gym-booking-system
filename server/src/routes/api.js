@@ -25,9 +25,14 @@ router.get('/notifications/:userId', ProfileController.getNotifications);
 
 // Admin routes
 router.post('/admin/services', AdminController.createService);
+router.delete('/admin/services/:id', AdminController.deleteService);
 router.post('/admin/trainers', AdminController.createTrainer);
+router.delete('/admin/trainers/:id', AdminController.deleteTrainer);
 router.post('/admin/halls', AdminController.createGymHall);
+router.delete('/admin/halls/:id', AdminController.deleteGymHall);
 router.delete('/admin/users/:id', AdminController.deleteUser);
+router.get('/admin/users', AdminController.getAllUsers);
+router.get('/admin/bookings', AdminController.getAllBookings);
 router.post('/admin/reminders', AdminController.triggerReminders);
 
 // Content Routes 

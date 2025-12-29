@@ -1,8 +1,11 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { connectDB } = require('./config/database');
 const db = require('./models');
 const apiRoutes = require('./routes/api');
+const initScheduledJobs = require('./scheduler');
+const uploadRoutes = require('./routes/uploadRoutes');
 require('dotenv').config();
 
 const app = express();
@@ -10,7 +13,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 app.use('/api', apiRoutes); 
+
+app.use('/api/upload', uploadRoutes);
 
 app.get('/', (req, res) => {
     res.send('Gym Booking API is running...');
@@ -23,6 +30,8 @@ const startServer = async () => {
     
     await db.sequelize.sync({ force: false }); 
     console.log('Database synced.');
+
+    initScheduledJobs();
 
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);

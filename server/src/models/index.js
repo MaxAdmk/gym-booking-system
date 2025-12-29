@@ -71,6 +71,24 @@ Booking.belongsTo( Trainer, {
     foreignKey: 'trainerId'
 });
 
+// Many to many connections
+
+GymHall.belongsToMany(SportService, { 
+    through: 'HallServices', timestamps: false 
+});
+
+SportService.belongsToMany(GymHall, { 
+    through: 'HallServices', timestamps: false 
+});
+
+GymHall.belongsToMany(Trainer, { 
+    through: 'HallTrainers', timestamps: false 
+});
+
+Trainer.belongsToMany(GymHall, { 
+    through: 'HallTrainers', timestamps: false 
+});
+
 // Exporting the db object
 
 const db = {

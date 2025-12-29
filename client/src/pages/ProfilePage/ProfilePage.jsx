@@ -3,31 +3,31 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 import { useForm } from 'react-hook-form'; 
 import { useNavigate } from 'react-router-dom';
+import FileUpload from '../../components/FileUpload';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    
     const [profileData, setProfileData] = useState(null);
     const [bookings, setBookings] = useState([]);
-    const [notifications, setNotifications] = useState([]); 
     const [loading, setLoading] = useState(true);
-    
+
     const [isEditing, setIsEditing] = useState(false);
-    const { register, handleSubmit } = useForm(); 
+    
+    const { register, handleSubmit, setValue } = useForm(); 
 
     const fetchData = async () => {
         if (!user) return;
         try {
-            const [profRes, histRes, notifRes] = await Promise.all([
+            const [profRes, histRes] = await Promise.all([
                 api.get(`/profile/${user.id}`),
-                api.get(`/bookings/user/${user.id}`),
-                api.get(`/notifications/${user.id}`)
+                api.get(`/bookings/user/${user.id}`)
             ]);
 
             setProfileData(profRes.data);
             setBookings(histRes.data);
-            setNotifications(notifRes.data);
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -39,9 +39,17 @@ const ProfilePage = () => {
 
     const onEditSubmit = async (data) => {
         try {
+            console.log("Saving profile data:", data);
+            
             await api.put(`/profile/${user.id}`, data);
+            
             alert('Profile updated successfully!');
             setIsEditing(false);
+
+            const updatedUser = { ...user, ...data };
+            
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            
             window.location.reload(); 
         } catch (e) { 
             alert('Error updating profile: ' + (e.response?.data?.error || e.message)); 
@@ -59,16 +67,13 @@ const ProfilePage = () => {
         }
     };
 
-    if (!user) {
-        return <div className="container">Please log in to view profile.</div>;
-    }
-
-    if (loading) return <div>Loading...</div>;
-
     const handleLogout = () => {
         logout();
         navigate('/');
     };
+
+    if (!user) return <div className="container">Please log in to view profile.</div>;
+    if (loading) return <div>Loading...</div>;
 
     return (
         <div className='container'>
@@ -88,6 +93,17 @@ const ProfilePage = () => {
                 {isEditing ? (
                     <form onSubmit={handleSubmit(onEditSubmit)} className="edit_form">
                         <div className="form_group">
+                            <FileUpload 
+                                label="Profile Photo"
+                                defaultImage={user.photoUrl}
+                                onUpload={(url) => {
+                                    setValue('photoUrl', url);
+                                }} 
+                            />
+                            <input type="hidden" {...register('photoUrl')} />
+                        </div>
+
+                        <div className="form_group">
                             <label>First Name:</label>
                             <input {...register('firstName')} defaultValue={user.firstName} required />
                         </div>
@@ -103,27 +119,18 @@ const ProfilePage = () => {
                     </form>
                 ) : (
                     <div className="info_display">
-                        <p><strong>Full Name:</strong> {user.firstName} {user.lastName}</p>
-                        <p><strong>Email:</strong> {user.email}</p>
-                        <p><strong>Phone:</strong> {user.phone || 'Not set'}</p>
-                        <p><strong>Role:</strong> {user.role}</p>
+                        <img 
+                            src={user.photoUrl || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'} 
+                            alt="Avatar" 
+                            style={{width:'80px', height:'80px', borderRadius:'50%', objectFit:'cover', border: '1px solid #ccc'}} 
+                        />
+                        <div>
+                            <p><strong>Full Name:</strong> {user.firstName} {user.lastName}</p>
+                            <p><strong>Email:</strong> {user.email}</p>
+                            <p><strong>Phone:</strong> {user.phone || 'Not set'}</p>
+                            <p><strong>Role:</strong> {user.role}</p>
+                        </div>
                     </div>
-                )}
-            </section>
-
-            <section className='notifications_section'>
-                <h3>🔔 Notifications</h3>
-                {notifications.length === 0 ? (
-                    <p className="no_data">No new notifications.</p>
-                ) : (
-                    <ul className="notifications_list">
-                        {notifications.map(n => (
-                            <li key={n.id} className={n.isRead ? 'read' : 'unread'}>
-                                <span className="notif_message">{n.message}</span>
-                                <span className="notif_date">{new Date(n.createdAt).toLocaleDateString()}</span>
-                            </li>
-                        ))}
-                    </ul>
                 )}
             </section>
 
@@ -133,7 +140,11 @@ const ProfilePage = () => {
                     {profileData?.card ? (
                         <>
                             <p>Level: <strong>{profileData.card.level}</strong></p>
-                            <p>Points: <strong>{profileData.card.pointBalance}</strong></p>
+                            <p>Points: <strong>
+                                {profileData.card.pointsBalance !== undefined 
+                                    ? profileData.card.pointsBalance 
+                                    : profileData.card.pointBalance}
+                            </strong></p>
                         </>
                     ) : (
                         <p>No card found (Contact Admin)</p>
@@ -145,7 +156,7 @@ const ProfilePage = () => {
                     {profileData?.membership ? (
                         <>
                             <p>Type: <strong>{profileData.membership.type}</strong></p>
-                            <p>Expires: {profileData.membership.endDate}</p>
+                            <p>Expires: {new Date(profileData.membership.endDate).toLocaleDateString()}</p>
                             <p style={{color: 'green', fontWeight: 'bold'}}>ACTIVE</p>
                         </>
                     ) : (
@@ -166,13 +177,29 @@ const ProfilePage = () => {
                 {bookings.length === 0 ? <p className="no_data">No bookings yet.</p> : (
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                         <thead>
-                            <tr className='table_topline'><th>ID</th><th>Date</th><th>Status</th><th>Price</th></tr>
+                            <tr className='table_topline'>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Hall</th>
+                                <th>Trainer</th>
+                                <th>Status</th>
+                                <th>Price</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {bookings.map(b => (
                                 <tr className='table' key={b.id} style={{ borderBottom: '1px solid #eee' }}>
                                     <td style={{padding:'8px'}}>#{b.id}</td>
                                     <td style={{padding:'8px'}}>{new Date(b.startTime).toLocaleString()}</td>
+                                    
+                                    <td style={{padding:'8px'}}>{b.GymHall?.name || 'N/A'}</td>
+
+                                    <td style={{padding:'8px'}}>
+                                        {b.Trainer 
+                                            ? `${b.Trainer.firstName} ${b.Trainer.lastName}` 
+                                            : <span style={{color: '#999'}}>-</span>}
+                                    </td>
+
                                     <td style={{padding:'8px'}}>
                                         <span className={`status ${b.status.toLowerCase()}`}>{b.status}</span>
                                     </td>
